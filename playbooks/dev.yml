@@ -1,0 +1,34 @@
+---
+
+- name: NINGHAO PLAYBOOK | by ninghao.net
+  hosts: all
+  sudo: true
+
+  # 自定义变量
+
+  vars:
+    Repo:
+      epel: epel-release-7-5.noarch.rpm
+      ius: ius-release-1.0-13.ius.centos7.noarch.rpm
+
+  vars_files:
+    - config/dev/drupal.yml
+    - config/dev/mariadb.yml
+    - config/dev/phpmyadmin.yml
+
+  # Roles
+
+  roles:
+    - init
+    - php-fpm
+    - tool
+    - nginx
+    - mariadb
+    - drupal
+    - phpmyadmin
+
+  handlers:
+    - name: 重启 nginx
+      service: name=nginx state=restarted
+    - name: 重启 php-fpm
+      service: name=php-fpm state=restarted

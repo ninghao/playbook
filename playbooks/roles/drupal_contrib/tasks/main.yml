@@ -1,0 +1,31 @@
+---
+## Drupal 模块
+
+- name: 下载常用模块
+  command: /usr/bin/drush dl {{ item }} -y chdir={{ Drupal.root }}
+  with_items:
+    - views
+    - module_filter
+    - token-7.x-1.x-dev
+    - pathauto-7.x-1.x-dev
+    - l10n_update
+    - features
+  # when: settings.stat.exists
+
+- name: 启用常用模块
+  command: /usr/bin/drush en {{ item }} -y chdir={{ Drupal.root }}
+  with_items:
+    - views
+    - views_ui
+    - module_filter
+    - token
+    - pathauto
+    - l10n_update
+    - features
+  # when: settings.stat.exists
+  notify:
+    - 刷新模块的翻译
+    - 更新模块的翻译
+
+- name: 清空缓存
+  command: /usr/bin/drush cc all chdir={{ Drupal.root }}

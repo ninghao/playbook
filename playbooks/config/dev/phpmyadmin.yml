@@ -1,0 +1,6 @@
+---
+
+phpmyadmin:
+
+  root: /vagrant/phpmyadmin
+  hostname: phpmyadmin.ninghao.dev

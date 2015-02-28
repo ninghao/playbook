@@ -1,0 +1,26 @@
+---
+
+## mariadb
+
+- name: 删除默认的 mariadb-libs
+  yum: name=mariadb-libs-5.5.35-3.el7 state=absent
+
+- name: 安装新的 mariadb
+  yum: name=mariadb100u
+
+- name: 安装新的 mariadb-server
+  yum: name=mariadb100u-server
+
+- name: 启动 mariadb
+  service: name=mariadb state=started enabled=yes
+
+- name: 安装 MySQL-python
+  yum: name=MySQL-python
+
+- name: mariadb | 为 root 用户设置密码
+  mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ Mariadb.root_password }} login_user=root login_password={{ Mariadb.root_password }}
+  with_items:
+    #- "{{ hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost

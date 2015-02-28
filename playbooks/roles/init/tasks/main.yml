@@ -1,0 +1,26 @@
+## 初始化
+
+- name: 把系统时区设置成上海
+  shell: timedatectl set-timezone Asia/Shanghai
+
+### 添加仓库
+
+- stat: path=/etc/yum.repos.d/epel.repo
+  register: epel
+
+- stat: path=/etc/yum.repos.d/ius.repo
+  register: ius
+
+- name: 复制 epel
+  copy: src=files/repo/{{ Repo.epel }} dest=/tmp/{{ Repo.epel }}
+
+- name: 复制 ius
+  copy: src=files/repo/{{ Repo.ius }} dest=/tmp/{{ Repo.ius }}
+
+- name: 安装 epel
+  command: rpm -ivh /tmp/{{ Repo.epel }}
+  when: not epel.stat.exists
+
+- name: 安装 ius
+  command: rpm -ivh /tmp/{{ Repo.ius }}
+  when: not ius.stat.exists

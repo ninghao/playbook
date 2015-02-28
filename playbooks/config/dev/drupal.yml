@@ -1,0 +1,24 @@
+---
+
+Drupal:
+
+  database_name: drupal
+  database_user: drupal
+  database_password: drupal
+
+  doc: /vagrant/drupal
+  root: /vagrant/drupal/docroot
+  drush: /drupal/drush
+
+  site_name: ninghao
+  admin_name: admin
+  admin_pass: admin
+  admin_mail: admin@ninghao.net
+  site_mail: admin@ninghao.net
+
+  locale: zh-hans
+  default_timezone: Asia/Shanghai
+  default_country: CN
+  date_first_day: 1
+
+  hostname: dp.ninghao.dev

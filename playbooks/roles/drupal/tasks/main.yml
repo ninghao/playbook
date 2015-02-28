@@ -1,0 +1,95 @@
+---
+
+## Drupal
+
+- name: mariadb | 创建数据库
+  mysql_db: name={{ Drupal.database_name }} state=present login_user=root login_password={{ Mariadb.root_password }}
+
+- name: mariadb | 创建用户
+  mysql_user: name={{ Drupal.database_user }} password={{ Drupal.database_password }} priv={{ Drupal.database_name }}.*:ALL state=present login_user=root login_password={{ Mariadb.root_password }}
+
+- name: nginx 配置文件
+  template: src=templates/nginx/drupal.tpl dest=/etc/nginx/conf.d/{{ Drupal.hostname }}.conf
+  notify: 重启 nginx
+
+- stat: path={{ Drupal.root }}
+  register: docroot
+
+- stat: path={{ Drupal.root }}/index.php
+  register: drupal
+
+- stat: path={{ Drupal.root }}/profiles/standard/translations/drupal-7.34.zh-hans.po
+  register: locale
+
+- stat: path={{ Drupal.root }}/sites/default/settings.php
+  register: settings
+
+- name: Drupal Boilerplate
+  git: repo=https://github.com/ninghao/drupal-boilerplate.git dest={{ Drupal.doc }}
+  when: not docroot.stat.exists
+
+- name: 下载 Drupal
+  shell: /usr/bin/drush dl drupal-7.* --destination={{ Drupal.root }} --drupal-project-rename
+  when: not drupal.stat.exists
+
+- name: 移动 Drupal 文件
+  shell: rsync -r {{ Drupal.root }}/drupal/ {{ Drupal.root }}
+  when: not drupal.stat.exists
+
+- name: 删除下载的 Drupal
+  shell: rm -rf {{ Drupal.root }}/drupal
+  when: not drupal.stat.exists
+
+- name: 下载 Drupal 简体中文语言
+  shell: wget http://ftp.drupal.org/files/translations/7.x/drupal/drupal-7.34.zh-hans.po -P {{ Drupal.root }}/profiles/standard/translations/
+  when: not locale.stat.exists
+
+- name: 安装 Drupal
+  command: >
+    /usr/bin/drush site-install
+    --db-url=mysql://{{ Drupal.database_user }}:{{ Drupal.database_password }}@localhost/{{ Drupal.database_name }}
+    --site-name={{ Drupal.site_name }}
+    --account-name={{ Drupal.admin_name }}
+    --account-pass={{ Drupal.admin_pass }}
+    --account-mail={{ Drupal.admin_mail }}
+    --site-mail={{ Drupal.site_mail }}
+    --locale={{ Drupal.locale }} -y
+    chdir={{ Drupal.root }}
+  when: not settings.stat.exists
+
+- name: 创建 contrib 目录
+- file: path={{ Drupal.root }}/sites/all/contrib state=directory
+
+- name: 重新设置 Drupal 管理员密码
+  command: /usr/bin/drush user-password {{ Drupal.admin_name }} --password={{ Drupal.admin_pass}} chdir={{ Drupal.root }}
+  when: settings.stat.exists
+
+- name: 设置默认的时区
+  command: /usr/bin/drush variable-set date_default_timezone {{ Drupal.default_timezone }} chdir={{ Drupal.root }}
+
+- name: 设置默认的国家
+  command: /usr/bin/drush variable-set site_default_country {{ Drupal.default_country }} chdir={{ Drupal.root }}
+
+- name: 设置一周的第一天
+  command: /usr/bin/drush variable-set date_first_day {{ Drupal.date_first_day }} chdir={{ Drupal.root }}
+
+- name: 修改临时目录的拥有者
+  file: path=/tmp owner=vagrant recurse=yes
+
+- name: 创建私有文件系统路径
+  file: path={{ Drupal.doc }}/private_files state=directory
+
+- name: 设置私有文件系统的路径
+  lineinfile: >
+    dest={{ Drupal.root }}/sites/default/settings.php
+    line="/* 私有文件系统路径 */ $conf['file_private_path'] = '{{ Drupal.doc }}/private_files';"
+  when: settings.stat.exists
+
+- name: 禁用 overlay 模块
+  command: /usr/bin/drush dis overlay -y chdir={{ Drupal.root }}
+
+### 升级 Drupal
+- name: 升级 Drupal
+  command: /usr/bin/drush up drupal -y chdir={{ Drupal.root }}
+- name: 升级 Drupal 数据库
+  command: /usr/bin/drush updatedb -y chdir={{ Drupal.root }}

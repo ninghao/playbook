@@ -1,0 +1,31 @@
+---
+
+## phpMyAdmin
+
+- stat: path=/tmp/phpMyAdmin-4.3.10-all-languages.tar.bz2
+  register: phpMyAdmin_tar
+
+- stat: path=/tmp/phpMyAdmin-4.3.10-all-languages
+  register: phpMyAdmin_untar
+
+- stat: path={{ phpmyadmin.root }}/index.php
+  register: phpMyAdmin
+
+- name: 下载 phpMyAdmin
+  command: wget http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/4.3.10/phpMyAdmin-4.3.10-all-languages.tar.bz2 -P /tmp
+  when: not phpMyAdmin_tar.stat.exists
+
+- name: 解压 phpMyAdmin
+  command: tar xfj phpMyAdmin-4.3.10-all-languages.tar.bz2 chdir=/tmp
+  when: not phpMyAdmin_untar.stat.exists
+
+- name: 移动 phpMyAdmin
+  command: mv phpMyAdmin-4.3.10-all-languages {{ phpmyadmin.root }} -f chdir=/tmp
+  when: not phpMyAdmin.stat.exists
+
+- name: nginx 配置文件
+  template: src=templates/nginx/phpmyadmin.tpl dest=/etc/nginx/conf.d/{{ phpmyadmin.hostname }}.conf
+  notify: 重启 nginx
+
+- name: 修改 php session 目录的拥有者
+  file: path=/var/lib/php-fpm/session owner=vagrant recurse=yes

@@ -1,0 +1,12 @@
+---
+
+## nginx
+
+- name: 安装 nginx
+  yum: name=nginx
+
+- name: 启动 nginx
+  service: name=nginx state=started enabled=yes
+
+- name: 修改 /var/lib/nginx 的拥有者
+  file: path=/var/lib/nginx owner=vagrant recurse=yes

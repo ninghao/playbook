@@ -1,0 +1,37 @@
+---
+  
+## php
+
+- name: 安装 php-fpm
+  yum: name=php56u-fpm
+
+- name: 启动 php-fpm
+  service: name=php-fpm state=started enabled=yes
+
+- name: 安装 php 扩展
+  yum: pkg={{ item }} state=latest
+  with_items:
+    - php56u-gd
+    - php56u-mysqlnd
+    - php56u-pdo
+    - php56u-mcrypt
+    - php56u-mbstring
+    - php56u-xmlrpc
+    - php56u-pecl-jsonc
+  notify: 重启 php-fpm
+
+- name: 修改 php-fpm 用户
+  lineinfile: "dest=/etc/php-fpm.d/www.conf state=present regexp='^;?user = ' line='user = vagrant'"
+  notify: 重启 php-fpm
+
+- name: 修改 php-fpm 用户组
+  lineinfile: "dest=/etc/php-fpm.d/www.conf state=present regexp='^;?group = ' line='group = vagrant'"
+  notify: 重启 php-fpm
+
+- name: 修改 php 最大上传文件尺寸
+  lineinfile: "dest=/etc/php.ini state=present regexp='^;?upload_max_filesize = ' line='upload_max_filesize = 100M'"
+  notify: 重启 php-fpm
+
+- name: 修改 php 最大 post 尺寸
+  lineinfile: "dest=/etc/php.ini state=present regexp='^;?post_max_size = ' line='post_max_size = 100M'"
+  notify: 重启 php-fpm
