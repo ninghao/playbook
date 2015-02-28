@@ -12,7 +12,16 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ninghao/playbook-7.0"
+
+  # 在命令行下，添加在 atlas 上的 box 比较慢，你可以使用下载工具，先把 box 下载到本地电脑上，然后手工去添加 box。
+  # 复制下面的地址，用迅雷下载：
+  # https://atlas.hashicorp.com/ninghao/boxes/playbook-64/versions/1.0.0/providers/virtualbox.box
+  # 添加下载到本地的 box 的方法，假设你下载以后的 .box 文件叫 virtualbox.box，并且它的位置是在桌面上
+  # cd ~/desktop
+  # vagrant box add ninghao/playbook-64 virtualbox.box
+  # 完成以后，你就可以删除掉 virtualbox.box 文件了。用 vagrant box list 命令查看可用的 box，你会发现 ninghao/playbook-64
+
+  config.vm.box = "ninghao/playbook-64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
