@@ -58,7 +58,7 @@
   when: not settings.stat.exists
 
 - name: 创建 contrib 目录
-- file: path={{ Drupal.root }}/sites/all/contrib state=directory
+  file: path={{ Drupal.root }}/sites/all/contrib state=directory
 
 - name: 重新设置 Drupal 管理员密码
   command: /usr/bin/drush user-password {{ Drupal.admin_name }} --password={{ Drupal.admin_pass}} chdir={{ Drupal.root }}
