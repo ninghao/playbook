@@ -96,11 +96,6 @@ Vagrant.configure(2) do |config|
     local.vm.network "private_network", ip: "192.168.33.130"
     local.vm.synced_folder "app/local", "/vagrant", create: true
 
-    # 使用 Ansible 自动化配置
-    local.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/local.yml"
-    end
-
   end
 
   # Dev 环境
@@ -109,10 +104,6 @@ Vagrant.configure(2) do |config|
     dev.vm.network "private_network", ip: "192.168.33.131"
     dev.vm.synced_folder "app/dev", "/vagrant", create: true
 
-    # 使用 Ansible 自动化配置
-    dev.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/dev.yml"
-    end
   end
 
 
