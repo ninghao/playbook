@@ -10,3 +10,7 @@
 
 - name: 修改 /var/lib/nginx 的拥有者
   file: path=/var/lib/nginx owner=vagrant recurse=yes
+
+- name: 修改 nginx 用户
+  lineinfile: "dest=/etc/nginx/nginx.conf state=present backrefs=yes regexp='user  nginx;' line='user  vagrant;'"
+  notify: 重启 nginx
