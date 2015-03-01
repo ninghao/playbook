@@ -83,12 +83,28 @@ Vagrant.configure(2) do |config|
   # NINGHAO PLAYBOOK by ninghao.net
   ##
 
+  # ssh 到 Master 以后
+  # 生成公钥与密钥，再把公钥里的内容复制到你想用 ansible 配置的主机上。
+  # ssh-keygen
+  # ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.33.130
+  # 会提供你输入 yes/no ，输入 yes ，又会提示你输入 vagrant 用户的密码，密码默认是 vagrant
+  # ssh vagrant@192.168.33.130
+  # 现在你已经在 Master 上 ssh 到了 local 这台主机上了
+  # 输入 exit 可以退出
+  # 用同样方法再去处理一下 dev 主机
+  # ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.33.131
+
+  # 在 Master 上，如果你想用 ansible 去配置 local 这台主机，可以这样：
+  # ansible-playbook -l local /vagrant/playbooks/local.yml
+  # 要配置 dev 主机，可以这样：
+  # ansible-playbook -l dev /vagrant/playbooks/dev.yml
+
   # Master
   config.vm.define "master" do |master|
     master.vm.hostname = "master"
     master.vm.network "private_network", ip: "192.168.33.111"
     master.vm.provision :shell, path: "playbooks/files/shell/master.sh", args: ["default"]
-    
+
   end
 
   # Local 环境
