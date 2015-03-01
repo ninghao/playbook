@@ -136,7 +136,7 @@ Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.
     *   files：要复制到服务器上的一些文件。复制到哪里，是在 playbook 里面指定的。
     *   roles：把配置按照功能，分成不同的 role ，每个 role 都有自己的功能。
 
-            *   drupal：配置与安装 Drupal 用的。
+        *   drupal：配置与安装 Drupal 用的。
         *   drupal_contrib：配置安装并启用一些 Drupal 常用的模块。
         *   init：一些初始化的配置。
         *   mariadb：配置数据库。
