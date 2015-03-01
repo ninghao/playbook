@@ -130,12 +130,10 @@ Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.
 *   Vagrantfile：Vagrant 要用到的配置文件。
 *   app：这里面是在不同环境下安装好的 Drupal ，还有一些其它的应用，比如 phpMyAdmin。local 里面是本地环境下的应用，dev 目录里面是开发环境下的应用。
 *   playbooks：这里是写好的剧本。就是配置服务器用的代码。
-
     *   config：配置文件，就是一些变量，你可以修改这些配置文件里的对应的变量的值。
     *   config_default：默认的配置文件。
     *   files：要复制到服务器上的一些文件。复制到哪里，是在 playbook 里面指定的。
     *   roles：把配置按照功能，分成不同的 role ，每个 role 都有自己的功能。
-
         *   drupal：配置与安装 Drupal 用的。
         *   drupal_contrib：配置安装并启用一些 Drupal 常用的模块。
         *   init：一些初始化的配置。
@@ -144,7 +142,6 @@ Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.
         *   php-fpm：配置 php 。
         *   phpmyadmin：配置安装 phpMyAdmin。
         *   tool：配置安装一些常用的工具。
-
         *   templates：这里也是一些要复制到服务器上的文件，只不过，这些文件里面，可以设置变量。这些变量的值，是在 config 目录下面设置的。
 
 ## 问题
