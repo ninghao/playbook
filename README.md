@@ -1,3 +1,5 @@
+> 暂时不支持 Windows，我再找找方法：）
+
 [Ninghao Playbook](https://github.com/ninghao/playbook "Ninghao Playbook 仓库")（宁皓剧本），是用 Ansible 写的一个自动化配置 Drupal 本地开发环境的剧本，它需要结合 [Vagrant](http://ninghao.net/course/1569 "Vagrant 课程") 使用。理论上，你只需要输入 vagrant up ，完成以后，你就拥有了两台虚拟机，上面分别已经安装好了 Drupal 所需要的运行环境（nginx，php-fpm，mariadb ... ），还有 Drupal 本身，以及一些常用的模块（views，token，features，module_filter ... ）。
 
 ## Ninghao Playbook 都做了什么
