@@ -86,7 +86,7 @@ Vagrant.configure(2) do |config|
   # Local 环境
   config.vm.define "local" do |local|
     local.vm.hostname = "local"
-    local.vm.network "private_network", ip: "192.168.33.100"
+    local.vm.network "private_network", ip: "192.168.33.130"
     local.vm.synced_folder "app/local", "/vagrant", create: true
 
     # 使用 Ansible 自动化配置
@@ -99,7 +99,7 @@ Vagrant.configure(2) do |config|
   # Dev 环境
   config.vm.define "dev" do |dev|
     dev.vm.hostname = "dev"
-    dev.vm.network "private_network", ip: "192.168.33.101"
+    dev.vm.network "private_network", ip: "192.168.33.131"
     dev.vm.synced_folder "app/dev", "/vagrant", create: true
 
     # 使用 Ansible 自动化配置
