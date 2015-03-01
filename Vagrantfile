@@ -87,7 +87,8 @@ Vagrant.configure(2) do |config|
   config.vm.define "master" do |master|
     master.vm.hostname = "master"
     master.vm.network "private_network", ip: "192.168.33.111"
-
+    master.vm.provision :shell, path: "playbooks/files/shell/master.sh", args: ["default"]
+    
   end
 
   # Local 环境
