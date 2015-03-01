@@ -83,6 +83,13 @@ Vagrant.configure(2) do |config|
   # NINGHAO PLAYBOOK by ninghao.net
   ##
 
+  # Master
+  config.vm.define "master" do |master|
+    master.vm.hostname = "master"
+    master.vm.network "private_network", ip: "192.168.33.111"
+
+  end
+
   # Local 环境
   config.vm.define "local" do |local|
     local.vm.hostname = "local"
