@@ -165,3 +165,5 @@ Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.
 <pre>vagrant provision local</pre>
 或者自动化配置一下 dev 这个主机：
 <pre>vagrant provision dev</pre>
+---
+made with ：） by [ninghao.net](http://ninghao.net)
