@@ -35,4 +35,4 @@
   template: src=templates/drupal/drushrc.tpl dest=/root/.drush/drushrc.php
 
 - name: drushrc.php
-  template: src=templates/drupal/drushrc.tpl dest=/home/vagrant/.drush/drushrc.php
+  template: src=templates/drupal/drushrc.tpl dest=/home/{{ App.user }}/.drush/drushrc.php

@@ -1,5 +1,5 @@
 ---
-  
+
 ## php
 
 - name: 安装 php-fpm
@@ -21,11 +21,11 @@
   notify: 重启 php-fpm
 
 - name: 修改 php-fpm 用户
-  lineinfile: "dest=/etc/php-fpm.d/www.conf state=present regexp='^;?user = ' line='user = vagrant'"
+  lineinfile: "dest=/etc/php-fpm.d/www.conf state=present regexp='^;?user = ' line='user = {{ App.user }}'"
   notify: 重启 php-fpm
 
 - name: 修改 php-fpm 用户组
-  lineinfile: "dest=/etc/php-fpm.d/www.conf state=present regexp='^;?group = ' line='group = vagrant'"
+  lineinfile: "dest=/etc/php-fpm.d/www.conf state=present regexp='^;?group = ' line='group = {{ App.user }}'"
   notify: 重启 php-fpm
 
 - name: 修改 php 最大上传文件尺寸

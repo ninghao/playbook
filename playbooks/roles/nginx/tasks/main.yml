@@ -9,8 +9,8 @@
   service: name=nginx state=started enabled=yes
 
 - name: 修改 /var/lib/nginx 的拥有者
-  file: path=/var/lib/nginx owner=vagrant recurse=yes
+  file: path=/var/lib/nginx owner={{ App.user }} recurse=yes
 
 - name: 修改 nginx 用户
-  lineinfile: "dest=/etc/nginx/nginx.conf state=present backrefs=yes regexp='user  nginx;' line='user  vagrant;'"
+  lineinfile: "dest=/etc/nginx/nginx.conf state=present backrefs=yes regexp='user  ' line='user  {{ App.user }};'"
   notify: 重启 nginx

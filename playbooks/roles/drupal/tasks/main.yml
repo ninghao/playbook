@@ -74,7 +74,7 @@
   command: /usr/bin/drush variable-set date_first_day {{ Drupal.date_first_day }} chdir={{ Drupal.root }}
 
 - name: 修改临时目录的拥有者
-  file: path=/tmp owner=vagrant recurse=yes
+  file: path=/tmp owner={{ App.user }} recurse=yes
 
 - name: 创建私有文件系统路径
   file: path={{ Drupal.doc }}/private_files state=directory

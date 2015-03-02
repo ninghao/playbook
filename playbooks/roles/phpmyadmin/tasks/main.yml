@@ -28,4 +28,4 @@
   notify: 重启 nginx
 
 - name: 修改 php session 目录的拥有者
-  file: path=/var/lib/php-fpm/session owner=vagrant recurse=yes
+  file: path=/var/lib/php-fpm/session owner={{ App.user }} recurse=yes
