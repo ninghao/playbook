@@ -1,12 +1,62 @@
-> 暂时不支持 Windows，我再找找方法：）
+[Ninghao Playbook](https://github.com/ninghao/playbook "Ninghao Playbook 仓库")（宁皓剧本），是用 Ansible 写的一个自动化配置 Drupal 本地开发环境的剧本，它需要结合 [Vagrant](http://ninghao.net/course/1569 "Vagrant 课程") 使用。它可以自动配置虚拟机，安装好 Drupal 所需要的运行环境（nginx，php-fpm，mariadb ... ），还有 Drupal 本身，以及一些常用的模块（views，token，features，module_filter ... ）。
 
-[Ninghao Playbook](https://github.com/ninghao/playbook "Ninghao Playbook 仓库")（宁皓剧本），是用 Ansible 写的一个自动化配置 Drupal 本地开发环境的剧本，它需要结合 [Vagrant](http://ninghao.net/course/1569 "Vagrant 课程") 使用。理论上，你只需要输入 vagrant up ，完成以后，你就拥有了两台虚拟机，上面分别已经安装好了 Drupal 所需要的运行环境（nginx，php-fpm，mariadb ... ），还有 Drupal 本身，以及一些常用的模块（views，token，features，module_filter ... ）。
+![playbook](http://work.ninghao.net/wp-content/uploads/2015/03/playbook.jpg)
 
-## Ninghao Playbook 都做了什么
+## 操作摘要
+
+<pre>1. 创建项目
+   cd ~/desktop
+   git clone https://github.com/ninghao/playbook.git ninghao_drupal
+
+2. 编辑配置文件
+   cd ninghao_drupal/playbooks
+   cp -R config_default config
+
+3. 启动虚拟机
+   vagrant up
+
+4. 连接到 master 机器
+
+   Mac 用户可以：
+   vagrant ssh master
+
+   Windows 用户需要先查看连接到 master 的信息：
+   vagrant ssh-config
+
+   然后把相关信息输入到 Putty 里面，默认连接使用的用户是 vagrant，密码也是 vagrant 。
+
+5. 生成 ssh 公钥与密钥
+
+   在 Master 机器上：
+   ssh-keygen
+   ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.33.130
+   ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.33.131
+   ansible-playbook -l local /vagrant/playbooks/local.yml
+   ansible-playbook -l dev /vagrant/playbooks/dev.yml
+
+6. 编辑本机的 hosts 文件
+
+   在你的电脑上：
+   Mac：打开 /etc/hosts ，Windows：打开 C:\Windows\System32\Drivers\etc ，添加下面的内容：
+   # Local
+   192.168.33.130 dp.ninghao.local
+   192.168.33.130 phpmyadmin.ninghao.local
+
+   # Dev
+   192.168.33.131 dp.ninghao.dev
+   192.168.33.131 phpmyadmin.ninghao.dev
+
+7. 打开浏览器测试
+
+</pre>
+
+##  Ninghao Playbook 都做了什么
 
 主要就两件事：配置 Drupal 运行环境，还有安装 Drupal。目前只支持 Drupal 7 。Ninghao Playbook 用的 box（ninghao/playbook-64） 是基于 CentOS 7 做的，你也可以使用其它的 CentOS 的 box（比如 chef/centos-7.0） ，Vagrant 会按照 Ninghao Playbook 自动去配置 box 。
 
-启动以后，你会得到两台虚拟机，一台叫 local（本地），一台叫做 dev（开发） 。这样做是为了模拟 Drupal 开发用到的本地环境与开发环境。比如怎么样把在本地所做的修改，同步到开发环境上，怎么样把开发环境上的数据库同步到本地。
+启动以后，你会得到三台虚拟机， Master（控制）， Local（本地），还有 Dev（开发）。Master 用来控制 Local 还有 Dev，主要是在它上面执行 Ninghao Playbook 来自动配置 Local 与 Dev 。启动以后，在 Master 上面已经安装好了 Ansible 。
+
+运行 Drupal 我定义两台虚拟机，Local 与 Dev。这样做是为了模拟 Drupal 开发用到的本地环境与开发环境。比如怎么样把在本地所做的修改，同步到开发环境上，怎么样把开发环境上的数据库同步到本地。
 
 ### 环境
 
@@ -36,17 +86,16 @@ root 用户的默认密码：root
 
 *   一台 64 位架构的电脑。不管是 mac 还是 pc ，只要是 64 位架构就行。内存可以大一些，硬盘最好是固态的 。建议您至少有一台这样的电脑，没有的话，可以跟老婆或者老妈商量商量，用来学习是个不错的理由 ：）
 *   在本地安装 Vagrant。我们要用 Vagrant 去管理虚拟机，因为 Drupal 要运行在这些 Linux 系统的虚拟机上。
-*   在本地安装 Ansible。Windows 试试用 Chocolatey 去安装，Mac 可以使用 Homebrew 安装。
 *   在本地安装 Git 。Git 用来做版本控制，你可以用它来跟踪宁皓剧本的变化。
 
 ## 用法
 
 ### 1. 克隆一份 Ninghao Playbook
 
-把 Ninghao Playbook 仓库克隆到本地一份。先进入到你想存储 Drupal 项目的地方，比如我在用户主目录下创建了一个 projects 目录，我想把要开发的项目放到这个目录的下面。
-<pre>cd ~/projects
+把 Ninghao Playbook 仓库克隆到本地一份。先进入到你想存储 Drupal 项目的地方，我想把要开发的项目放到桌面上。
+<pre>cd ~/desktop
 git clone https://github.com/ninghao/playbook.git ninghao_drupal</pre>
-上面在我的用户主目录下面的 projects 目录里，克隆了一份 Ninghao Playbook，放到了 ninghao_drupal 这个目录的下面。
+上面的命令，会在我的用户主目录下面的 desktop（桌面） 目录里，克隆了一份 Ninghao Playbook，放到了 ninghao_drupal 这个目录的下面。
 
 ### 2. 创建配置文件
 
@@ -56,14 +105,46 @@ git clone https://github.com/ninghao/playbook.git ninghao_drupal</pre>
 
 进入到你的项目所在的目录，然后执行：
 <pre>vagrant up</pre>
-上面的命令，会自动到 Atlas 去下载 ninghao/playbook-64 这个 box ，放到自己的电脑上，为当前项目导入并使用这个 box 。需要导入两份，一个是 Local 环境的 box，一个是 Dev 环境的 box 。启动以后，Vagrant 会根据 Ninghao Playbook ，自动去配置这两个 box ，去安装与配置 Drupal 需要的环境，安装 Drupal ，导入中文语言，设置管理员用户名跟密码，安装常用的模块等等。
+上面的命令，会自动到 Atlas 去下载 ninghao/playbook-64 这个 box ，放到自己的电脑上，为当前项目导入并使用这个 box 。启动以后，你会得到三台主机 master，local 还有 dev，你可以分别 ssh 连接到它们。
 
-你也可以分别启动 local 与 dev 这两台主机，比如只启动 local 主机：
-<pre>vagrant up local</pre>
-只启动 dev 主机：
-<pre>vagrant up dev</pre>
+### 4. 配置
 
-### 4. 配置主机名
+#### 连接到 master
+
+启动以后，先登录到 master 这台主机上，Mac 用户可以这样：
+<pre>vagrant ssh master</pre>
+Windows 用户要使用 Putty 工具 ssh 连接到虚拟机，你可以先查看一下 ssh 连接的信息：
+<pre>vagrant ssh-config</pre>
+会返回：
+<pre>Host master
+  HostName 127.0.0.1
+  User vagrant
+  Port 2222
+</pre>
+上面是你用 Putty 连接到 master 上的 ssh 信息，我这里，HostName 主机名是 127.0.0.1 ，User 是 vagrant，注意 Port 端口号是 2222，你要用的端口号很可能跟这个不一样。
+
+#### 生成 ssh 密钥与公钥
+
+连接到 master 上以后，先去生成 ssh 的密钥与公钥，然后你要把生成的公钥放到 local 跟 dev 这两台机器上，这样你在 master 上就可以不需要密码，直接 ssh 连接到 local 与 dev 了，下面是具体的方法：
+
+在 master 主机上，执行：
+<pre>ssh-keygen</pre>
+一路回车，上面的命令会生成密钥与公钥，这些文件默认的位置是在：~/.ssh ，文件名是：id_rsa 还有 id_rsa.pub。你要把 id_rsa.pub 这个文件里的内容放到 local 与 dev 上去，可以这样做：
+<pre>ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.33.130</pre>
+会提示你输入密码，默认是 vagrant。上面的命令，会把 id_rsa.pub 里的内容，复制到 192.168.33.130 上的 vagrant 这个用户的 .ssh 目录下面的，authorized_keys 这个文件里。现在，你就可以直接在 master 上，ssh 连接到 192.168.33.130（local）上了，不需要输入密码。
+
+用同样的方法，再去处理一下 dev 这个机器：
+<pre>ssh-copy-id -i ~/.ssh/id_rsa.pub vagrant@192.168.33.131</pre>
+
+#### 执行 Ninghao Playbook
+
+现在，你就可以在 master 机器上，执行 Ninghao Playbook，去配置 local 还有 dev 这两台机器了。配置 local，可以这样：
+<pre>ansible-playbook -l local /vagrant/playbooks/local.yml</pre>
+配置 dev，执行：
+<pre>ansible-playbook -l dev /vagrant/playbooks/dev.yml</pre>
+完成以后，会在 local 与 dev 这两台机器上都安装好 Drupal 所需要的环境，还有 Drupal 本身。
+
+### 5. 配置主机名
 
 默认 local 环境使用的主机名是 dp.ninghao.local，IP 地址是 192.168.33.130，dev 环境使用的主机名是 dp.ninghao.dev ，IP 地址是 192.168.33.131。你需要手工配置一下自己电脑上的 hosts 文件，这是一个文本文件，你可以用文件编辑器打开并编辑它，然后添加下面内容：
 <pre># Local
@@ -75,11 +156,11 @@ git clone https://github.com/ninghao/playbook.git ninghao_drupal</pre>
 192.168.33.131 phpmyadmin.ninghao.dev</pre>
 Windows：C:\Windows\System32\Drivers\etc ，Mac：/etc/hosts
 
-### 5. 测试
+### 6. 测试
 
 一切正常的话，你现在应该可以通过 dp.ninghao.local 打开 Local 环境的 Drupal ，用 dp.ninghao.dev 可以访问 Dev 环境的 Drupal 。
 
-### 6. 连接
+### 7. 连接
 
 Mac 用户可以使用 vagrant ssh 命令可以连接到主机，Windows 用户应该要用到 Putty 这个小工具。Mac 用户可以这样连接到 local 主机：
 <pre>vagrant ssh local</pre>
@@ -87,7 +168,7 @@ Mac 用户可以使用 vagrant ssh 命令可以连接到主机，Windows 用户�
 <pre>vagrant ssh dev</pre>
 Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.1），端口号（每台主机的 ssh 端口号是不同的），还有用户（默认是 vagrant）跟密码（默认也是 vagrant），可以这样查看这些信息：
 <pre>vagrant ssh-config</pre>
-根据返回的信息，去配置使用 Putty ，连接到不同的主机（ local 或者 dev ）。
+根据返回的信息，去配置使用 Putty ，连接到不同的主机（ master，local 或者 dev ）。
 
 ## 目录结构
 
@@ -107,6 +188,7 @@ Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.
     │   └── local
     ├── files
     │   └── repo
+    │   └── shell
     ├── roles
     │   ├── drupal
     │   │   └── tasks
@@ -154,15 +236,8 @@ Windows 用户使用 Putty 的时候，你要知道 ssh 的 IP 地址（127.0.0.
 
 下载 ninghao_playbook_64.box 这个 box ，然后手工添加它，比如下载之后这个 box 文件在 downloads 目录下面，这个 box 文件的名字是 ninghao_playbook_64.box ，手工添加它可以这样：
 <pre>vagrant box add ninghao/playbook-64 ~/downloads/ninghao_playbook_64.box</pre>
+
 完成以后，用 vagrant box list  查看一下可用的 box，你会看到刚才添加的 ninghao/playbook-64 ，这样再用 vagrant up 启动的时候，就不需要去下载这个 box 了，会直接在本地导入它。
 
-### 在启动的时候遇到错误了，没能完成自动配置
-
-先确定错误是由什么引起的，然后可以重新告诉 Vagrant 再去自动配置一下，使用命令：
-<pre>vagrant provision</pre>
-因为 Ninghao Playbook 里面定义了两台主机，所以，你也可以分别去自动化配置，像这样：
-<pre>vagrant provision local</pre>
-或者自动化配置一下 dev 这个主机：
-<pre>vagrant provision dev</pre>
 ---
 made with ：） by [ninghao.net](http://ninghao.net)
