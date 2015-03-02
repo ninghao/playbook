@@ -10,7 +10,7 @@ Drupal:
   root: /vagrant/drupal/docroot
   drush: /drush
 
-  site_name: ninghao
+  site_name: local
   admin_name: admin
   admin_pass: admin
   admin_mail: admin@ninghao.net
