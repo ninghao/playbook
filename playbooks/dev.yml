@@ -11,7 +11,7 @@
       epel: epel-release-7-5.noarch.rpm
       ius: ius-release-1.0-13.ius.centos7.noarch.rpm
     App:
-      user: vagrant    
+      user: vagrant
 
   vars_files:
     - config/dev/drupal.yml
@@ -21,13 +21,22 @@
   # Roles
 
   roles:
-    - init
-    - php-fpm
-    - tool
-    - nginx
-    - mariadb
-    - drupal
-    - phpmyadmin
+    - role: init
+      tags: init
+    - role: php-fpm
+      tags: php-fpm
+    - role: tool
+      tags: tool
+    - role: nginx
+      tags: nginx
+    - role: mariadb
+      tags: mariadb
+    - role: drupal
+      tags: drupal
+    - role: drupal_contrib
+      tags: drupal_contrib
+    - role: phpmyadmin
+      tags: phpmyadmin
 
   handlers:
     - name: 重启 nginx

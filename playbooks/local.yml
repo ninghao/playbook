@@ -21,14 +21,22 @@
   # Roles
 
   roles:
-    - init
-    - php-fpm
-    - tool
-    - nginx
-    - mariadb
-    - drupal
-    - drupal_contrib
-    - phpmyadmin
+    - role: init
+      tags: init
+    - role: php-fpm
+      tags: php-fpm
+    - role: tool
+      tags: tool
+    - role: nginx
+      tags: nginx
+    - role: mariadb
+      tags: mariadb
+    - role: drupal
+      tags: drupal
+    - role: drupal_contrib
+      tags: drupal_contrib
+    - role: phpmyadmin
+      tags: phpmyadmin
 
   handlers:
     - name: 重启 nginx
