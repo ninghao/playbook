@@ -24,3 +24,10 @@
     - 127.0.0.1
     - ::1
     - localhost
+
+- name: 添加 max_allowed_packet
+  lineinfile: dest=/etc/my.cnf line="max_allowed_packet"
+
+- name: 设置 max_allowed_packet
+  lineinfile: "dest=/etc/my.cnf state=present regexp='^;?max_allowed_packet' line='max_allowed_packet=100M'"
+  notify: 重启 mariadb    
