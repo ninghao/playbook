@@ -14,6 +14,7 @@
       user: vagrant
 
   vars_files:
+    - config/local/git.yml
     - config/local/drupal.yml
     - config/local/mariadb.yml
     - config/local/phpmyadmin.yml

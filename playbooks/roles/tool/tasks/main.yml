@@ -10,6 +10,21 @@
 
 - name: 安装 Git
   yum: name=git2u
+
+- name: 配置 Git 用户
+  shell: /usr/bin/git config --global user.name {{ Git.user_name }}
+
+- name: 配置 Git 邮件
+  shell: /usr/bin/git config --global user.email {{ Git.user_email }}
+
+- name: 配置 Git 用户
+  sudo: no
+  shell: /usr/bin/git config --global user.name {{ Git.user_name }}
+
+- name: 配置 Git 邮件
+  sudo: no
+  shell: /usr/bin/git config --global user.email {{ Git.user_email }}
+
 - name: 安装 unzip
   yum: name=unzip
 
