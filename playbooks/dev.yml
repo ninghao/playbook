@@ -44,6 +44,8 @@
       service: name=nginx state=restarted
     - name: 重启 php-fpm
       service: name=php-fpm state=restarted
+    - name: 重启 mariadb
+      service: name=mariadb state=restarted      
     - name: 刷新模块的翻译
       command: /usr/bin/drush l10n-update-refresh chdir={{ Drupal.root }}
     - name: 更新模块的翻译
