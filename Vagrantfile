@@ -112,6 +112,10 @@ Vagrant.configure(2) do |config|
     local.vm.hostname = "local"
     local.vm.network "private_network", ip: "192.168.33.130"
     local.vm.synced_folder "app/local", "/vagrant", create: true
+    local.vm.provider "virtualbox" do |vb|
+      # 自定义虚拟机的内存
+      vb.memory = "1024"
+    end
 
   end
 
@@ -120,6 +124,10 @@ Vagrant.configure(2) do |config|
     dev.vm.hostname = "dev"
     dev.vm.network "private_network", ip: "192.168.33.131"
     dev.vm.synced_folder "app/dev", "/vagrant", create: true
+    dev.vm.provider "virtualbox" do |vb|
+      # 自定义虚拟机的内存
+      vb.memory = "1024"
+    end
 
   end
 
