@@ -46,7 +46,7 @@
 
 - name: 安装 Drupal
   command: >
-    /usr/bin/drush site-install
+    /usr/bin/drush site-install standard
     --db-url=mysql://{{ Drupal.database_user }}:{{ Drupal.database_password }}@localhost/{{ Drupal.database_name }}
     --site-name={{ Drupal.site_name }}
     --account-name={{ Drupal.admin_name }}
