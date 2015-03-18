@@ -17,17 +17,30 @@
 - name: 安装 MySQL-python
   yum: name=MySQL-python
 
+- stat: path=~/.my.cnf
+  register: my_cnf
+
+- name: 复制 my.cnf
+  copy: src=files/mariadb/my.cnf dest=~/.my.cnf owner=root group=root mode="u=r,g-rwx,o-rwx"
+  when: not my_cnf.stat.exists
+
 - name: mariadb | 为 root 用户设置密码
-  mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ Mariadb.root_password }} login_user=root login_password={{ Mariadb.root_password }}
+  mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ Mariadb.root_password }}
   with_items:
     #- "{{ hostname }}"
     - 127.0.0.1
     - ::1
     - localhost
 
+- name: 修改 ~/.my.cnf 密码
+  lineinfile: "dest=~/.my.cnf state=present backrefs=yes regexp='password=' line='password={{ Mariadb.root_password }}'"
+
+- name: 设置 ~/.my.cnf 权限
+  file: path=~/.my.cnf state=touch mode="u=r,g-rwx,o-rwx"
+
 - name: 添加 max_allowed_packet
   lineinfile: dest=/etc/my.cnf line="max_allowed_packet"
 
 - name: 设置 max_allowed_packet
   lineinfile: "dest=/etc/my.cnf state=present regexp='^;?max_allowed_packet' line='max_allowed_packet=100M'"
-  notify: 重启 mariadb    
+  notify: 重启 mariadb
