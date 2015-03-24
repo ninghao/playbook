@@ -5,6 +5,12 @@
 - stat: path=/usr/local/bin/composer
   register: composer
 
+- name: 安装 Sendmail
+  yum: name=sendmail
+
+- name: 启动 Sendmail
+  service: name=sendmail state=started enabled=yes  
+
 - name: 安装 Vim
   yum: name=vim
 
